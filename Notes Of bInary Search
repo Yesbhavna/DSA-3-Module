@@ -1,0 +1,170 @@
+																BINARY SEARCH - DSA- DAY4
+																
+																
+AGGRESSIVE COWS
+
+Brute Force 
+
+Minimum possible distance between 2 cows: The minimum possible distance between two cows is 1 as the minimum distance between 2 consecutive stalls is 1.
+Maximum possible distance between 2 cows: The maximum possible distance between two cows is = max(stalls[])-min(stalls[]). This case occurs when we place 2 cows at two ends of the sorted stalls array.
+
+From the observations, we can conclude that our answer lies in the range 
+[1, max(stalls[])-min(stalls[])].
+
+
+
+we have to place the cow by maintaing "dist" in the sorted stalls.
+we will place the cow at very first position then we will iterate over the array and check if the distance between current place cow and the last
+placed cow is greater or equal to "dist", we will move to place next cow in the stall.
+
+we will write a function canweplace which take the parameter as "dist" and return cow if we placed all the cows in stall or false if that is not possible.
+
+canweplace{int[] stalls, int dist,int cows){
+set countcows = 1, as we place the first cow in stall at first position and set lastposition = stall[0]
+
+Then, using a loop we will start iterating the array from index 1. Inside the loop, we will do the following:
+If stalls[i] - ‘last’ >= dist: This means the current stall is at least ‘dist’ distance away from the last stall. So, we can place the next cow here. We will increase the value ‘countCows’ by 1 and set ‘last’ to the current stall.
+If countcows >= k: This means we have already placed k cows with maintaining the minimum distance ‘dist’. So, we will return true from this step.
+If we are outside the loop, we cannot place k cows with a minimum distance of ‘dist’. So, we will return false.
+
+
+basic learning we have learnt from the question
+Decides range of the distance
+
+Brute force -   pseudo code 
+canweplace(int[] stalls, int dist, int cows){
+countcow = 1;
+last = stalls[0]
+for(int i = 1; i<stalls.length; i++){
+if(stalls[i]-last >= dist){
+countcows++;
+last = stalls[i]
+if (countcows == cows) return true
+
+int the main function 
+
+First sort the array
+call this function canweplace to get the number of cows
+then
+set the range like = stalls[n-1] - stalls[0]
+iterate over the loop starting from i =1 and check if canweplace is false (for (int i = 1; i <= limit; i++) {
+            if (canWePlace(stalls, i, cows) == false) {
+                return (i - 1);
+            }
+return i-1
+else 
+return range
+
+Time complexity =  O(NlogN) + O(N *(max(stalls[])-min(stalls[])))
+space is O(1)
+
+Optimal Approach
+
+Binary search approach
+first step to make the function canweplace as we have for brute force  please refer that canweplace(stalls,dist,cows)
+now come to main function
+first sort the array
+set low = 1 (mn distance)
+set high= stalls[n - 1] - stalls[0] (highest range)
+start the loop with condition 
+while(low <=  high)
+find mid
+now call canweplace function
+if (canWePlace(stalls, mid, cows) == true) {(instead of sending i we are sending mid as dist in binary search)
+                low = mid + 1.....we can conclude that the number mid is one of our possible answers. But we want the maximum number. So, we will eliminate the left half and consider the right half(i.e. low = mid+1)
+            } else high = mid - 1 ( otherwise the value mid is greater than the distance we want. This means the numbers greater than ‘mid’ should not be considered and the right half of ‘mid’ consists of such numbers. So, we will eliminate the right half and consider the left half(i.e. high = mid-1)
+			
+        }
+        return high (return the value of high as the pointer will be pointing to the answer)
+		
+		
+Time Complexity = O(NlogN) + O(N * log(max(stalls[])-min(stalls[])))
+Space Complexity = O(1)
+
+
+
+code we have discussed in class
+
+                                                Peak Index in a mountain array
+ 
+ 
+
+Any element which follow this condition will be a peak index in a mountain array
+ARRAY[0] < ARRAY[1] < ARRAY[i-1] < ARRAY[ i] > ARRAY[ i+1 ] > ARRAY[..] > ARRAY[length-1]
+
+Suppose we have given the input [60, 20, 90, 110, 10].
+ans is 3 (110) which follows this condition
+
+
+Using Binary Search
+The elements in the given array must be in either ascending or descending sorted order. There should not be duplicate elements. Using the binary search algorithm, we can find out the required element. In this approach, at every step reduce the search by half. The problem can be solved by using the following steps:
+
+Find the middle element of the array arr.
+If the array is arranged in descending order (arr[mid]>arr[mid+1]), it means the peak element will be on the left side of the middle element. Therefore, reduce the search between the left half and the middle
+If the array is arranged in ascending order (arr[mid+1]<arr[mid]), it means the peak element will be on the right side of the middle element. Therefore, reduce the search between the right element and the middle+1
+Repeat step 2 and 3, recursively until the condition left<right become false.
+When the condition left >= right becomes true, the peak element will be at the left index
+
+
+Suppose the input array is {4, 2, 7, 9, 8, 3, 1}.
+
+The length of the array will be array length-1, i.e. 7-1 = 6.
+Therefore, High=6 and Low=0
+
+Let's find the mid of the array.
+
+Mid=low+(high-low)/2
+
+Mid=0+(6-0)/2 = 3
+
+Now check if (array[mid]>=array[mid+1]) or not
+
+Therefore, 9 >= 8, the condition is true. Set high=Mid
+
+Now, low=0, Mid=3, High=3
+Again, find the mid of the array Mid=low+(high-low)/2
+
+Mid = 0 + (3 - 0) / 2 = 1
+
+Now check if (array[mid]>=array[mid+1])
+
+Therefore, 2 >= 7, the condition is false. Set low=Mid+1
+
+Now, low=1+1=2, Mid=1, High=3
+
+Again, find the mid of the array Mid=low+(high-low)/2
+
+Mid = 2 + (3 - 2) / 2 = 2
+
+Now check if (array[mid]>=array[mid+1])
+
+Therefore, 7 >= 9, the condition is false. Set low=Mid+1
+
+Now, low=2+1=3, Mid=2, High=3
+
+Again, find the mid of the array Mid=low+(high-low)/2
+
+Mid = 3 + (3 - 3) / 2 = 1
+
+Now check if (array[mid]>=array[mid+1])
+
+Therefore, 2 >= 7, the condition is false. Set low=Mid+1
+
+Repeat the above process. At last we get low=3, High=3, Mid=3;
+
+And here when it comes in loop while (low < high), means 3< 3 and the condition becomes false. Exit from the loop and return low i.e. 3. Hence, the peak index become 3.
+
+Algorithm
+
+Set low = 0.
+Set high to the length of array -1.
+Declare a variable mid.
+Set mid = low + (high - low) / 2.
+While low < high:
+If array[ mid ] > = array [ mid + 1].
+then high = mid(//you are in decreasing part
+            //this may be the ans but i look at the left 
+            //this is why high != mid-1;)
+Else
+then low = mid + 1.
+Return low.
