@@ -1,0 +1,184 @@
+PLease pay attention we will do the dry run for stock span problem,
+This will build your concept and many question you will came across in which you will utilised this approach
+
+
+Suppose we have an array:
+Prices= [100 , 80 ,60, 70, 60, 75, 85]
+i =     [0,    1,   2,  3,  4,  5,  6]
+
+
+First we will create an empty stack 'st' and an array 'ngeli' of the same length as the output array
+with all elements initialized with -1.
+
+We will iterate from Right to left
+
+i = 6 (ele = 85)
+Stack is empty , so we push i =6
+on the stack
+
+st = [6]
+
+i = 5(ele = 75)
+the top of the stack(index = 6, value 85) is greater than 75 so we push i = 5 onto the stack.
+
+st = [5.6]
+
+i = 4 (ele = 60)
+the top of the stack(index 5 , value 75) is greater than 60 so we push i =4 onto the stack
+ 
+ st = [4,5,6]
+
+ i = 3 (ele = 70)
+
+the top of the stack (index 4, value 60) is less than 70, so we pop the stack...st= [5,6]
+
+update ngeli[4] = 3 (ele 60 has 70 as its next greater on left)
+
+the new top of the stack (index 5 , value 75) is greater than 70 , so we push i = 3 onto the stack
+
+st= [3, 5 , 6]
+
+ngeli = [-1, -1, -1, -1, 3, -1, -1]
+
+i = 2(ele = 60)
+ 
+the top of the stack (index 3 , value 70) is greater than 60 so we push i = 2 on the stack
+
+st = [2, 3, 5, 6]
+
+i = 1( ele = 80)
+
+the top of the stack (index 2, value 60) is less than 80 so we pop the stock
+ st = [3, 5, 6]
+ngeli[2] = 1 (ele 60 has 80 as its next greater on left)
+
+
+the new top of the stack (index 3, value 70) is less than 80, so we pop the stack
+st = [5, 6]
+
+ngeli[3] = 1 (ele 70 has 80 as its next greater on left)
+
+the new top of the stack (index 5, value 75) is less than 80 , so we pop the stack
+
+st = [6]
+
+ngeli[5] = 1 (element 75 has 80 as its next greater on left)
+
+the new top of the stack(index 6, value 85) is greater than 80, so we push i = 1 onto the stack
+
+st = [1,6]
+
+ngeli = [-1, -1 , 1, 1, 3, 1, -1]
+
+i = 0 (ele 100)
+
+the top of the stack (index 1, value 80) is less than 100, so we pop the stack
+
+st= [6]
+
+ngeli[1] = 0 (ele 80 has 100 as its next greater on left )
+
+the new top of the stack (index 6 , value 85) is less than 100 so we pop 
+
+ngeli[6] = 0 (ele 85 has 100 as its next greater on left )
+
+the stack now become empty so we push i = 0 onto the stack
+
+st = [0]
+
+ngeli = [-1, 0 , 1 , 1 , 3, 1, 0]
+
+final stack cleanup :
+    we pop the remaining element in the stack
+    ngeli[0] = -1 (no element is greater than 100 on the left)
+
+
+    the final 
+    ngeli[] = [-1, 0, 1, 1, 3, 1,0]
+
+step 2 
+calculate stock span
+using the 'ngeli' array we caculate the span for each days as span[i] = i ngeli[i]
+
+i = 0 , span[0] = 0-(-1) = 1
+i = 1 ,  span[1] = 1-0  = 1
+i = 2,  span[2] = 2-1= 1
+i = 3 , span[3] = 3-1 = 2
+i = 4 , span[4] = 4-3 = 4
+i =6, span[6] = 6- 0 = 6
+
+
+final ans = span arr = [1, 1 , 1, 2, 1, 4, 6]
+
+why we move right to left 
+it helps us ensure that for each day we correctly identify the nearest greater element
+that comes before that day, if we went from left to right we might incorrectly 
+process elements that occurs after the day
+
+
+ngeli helps us identify the first day before the current day where the price was higher
+
+if ngeli for a day is at index 'i' it means that from index 'i+1' to the current s=day all prices are less thanor equal
+to current day price
+
+
+Understand the span formula
+span[i] = i - ngeli[i]
+
+This formula is derived from how we calculate the **span** of stock prices using 
+the **Next Greater Element on the Left (NGEL)** concept.
+
+Breaking Down the Formula
+
+1. **`i`**: This represents the current day or the current index in the array.
+2. **`ngeli[i]`**: This represents the index of the nearest day to the left of `i` 
+where the stock price was higher than the price on day `i`. If there is no such day, `ngeli[i]` is `-1`.
+
+Why the Formula Works
+
+- The span is essentially the number of consecutive days leading up to 
+and including day `i` where the stock price has not been greater than the price on day `i`.
+
+- By finding `ngeli[i]`, we know the last day before day `i` where the price was greater. 
+Thus, the span is the number of days between `ngeli[i]` and `i`.
+
+#### Case 1: No Greater Element on the Left (`ngeli[i] = -1`)
+- If there's no day to the left with a greater price, then the entire span up to day `i` is valid.
+- The span would then be the number of days from the start to day `i`, which is `i - (-1) = i + 1`.
+
+#### Case 2: There Is a Greater Element on the Left (`ngeli[i] = j`)
+- If there is a day `j` to the left of `i` where the price is greater, then the span is 
+the number of days between day `j + 1` and day `i`.
+- The span is calculated as `i - j`.
+
+### Example Using the Formula
+
+For the array `[100, 80, 60, 70, 60, 75, 85]`, and `ngeli = [-1, 0, 1, 1, 3, 1, 0]`:
+
+- **Day 1 (i = 0)**:
+  - `ngeli[0] = -1`, so `span[0] = 0 - (-1) = 1`.
+
+- **Day 2 (i = 1)**:
+  - `ngeli[1] = 0`, so `span[1] = 1 - 0 = 1`.
+
+- **Day 3 (i = 2)**:
+  - `ngeli[2] = 1`, so `span[2] = 2 - 1 = 1`.
+
+- **Day 4 (i = 3)**:
+  - `ngeli[3] = 1`, so `span[3] = 3 - 1 = 2`.
+
+- **Day 5 (i = 4)**:
+  - `ngeli[4] = 3`, so `span[4] = 4 - 3 = 1`.
+
+- **Day 6 (i = 5)**:
+  - `ngeli[5] = 1`, so `span[5] = 5 - 1 = 4`.
+
+- **Day 7 (i = 6)**:
+  - `ngeli[6] = 0`, so `span[6] = 6 - 0 = 6`.
+
+### Summary
+
+The span formula `span[i] = i - ngeli[i]` essentially counts how many consecutive days, 
+including the current day, have a stock price less than or equal to the current day's price. 
+By using the `ngeli` array, which tracks the index of the nearest day on the left with a higher price, 
+this formula allows us to calculate the span in constant time for each day.
